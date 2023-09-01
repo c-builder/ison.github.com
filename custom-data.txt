@@ -44,16 +44,12 @@ const contextData = {
 
 方案二：
 <xs-vue-topic-video>
-// topic 入参
-const contextData = {
-  type: 'topic',
-};
 // response 出参
 {
     topic: {},
 }
 <xs-vue-comment-video>
-// topic 入参
+// comment 入参
 const contextData = {
   type: 'topList',
   commentId: 'commentId',
@@ -64,7 +60,7 @@ const contextData = {
 }
 
 <xs-vue-child-comment-video>
-// topic 入参
+// child-comment 入参
 const contextData = {
   type: 'topList',
   commentId: 'childReplyId', 
