@@ -116,9 +116,11 @@ function videoReg(content) {
 
 function videoTran({ content, modeType = 'user', forumType = 'topic', contextData }) {
   let replacedHtml = content;
-  const videoId = videoReg(content);
-  if(videoId) {
-    replacedHtml = content.replace(regex, `<xs-vue-${modeType}-${fourmType}-video data='${JSON.stringify(contextData)}'></xs-vue-${modeType}-${fourmType}-video>`);
+  if(typeof content === 'string' && content !== 'null' && content) {
+    const videoId = videoReg(content);
+    if(videoId) {
+      replacedHtml = content.replace(regex, `<xs-vue-${modeType}-${fourmType}-video data='${JSON.stringify(contextData)}'></xs-vue-${modeType}-${fourmType}-video>`);
+    }
   }
   return  replacedHtml;
 }
