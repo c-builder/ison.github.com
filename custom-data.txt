@@ -8,7 +8,7 @@ const contextData = {
 // response 出参
 {
     topic: {},
-    commeent: null,
+    comment: null,
     parentComment: null,
 }
 ---------------------------------------
@@ -22,7 +22,7 @@ const contextData = {
 // response 出参
 {
     topic: null,
-    commeent: {},
+    comment: {},
     parentComment: null,
 }
 ---------------------------------------
@@ -30,12 +30,49 @@ const contextData = {
 const contextData = {
   type: 'childComment',
   commentType: 'topList',
-  id: 'commentId', 
-  parentId: 'childReplyId',
+  id: 'childReplyId', 
+  parentId: 'parentId',
 };
 // response
 {
     topic: null,
-    commeent: {},
+    comment: {},
     parentComment: {},
 }
+
+======================================
+
+方案二：
+<xs-vue-topic-video>
+// topic 入参
+const contextData = {
+  type: 'topic',
+};
+// response 出参
+{
+    topic: {},
+}
+<xs-vue-comment-video>
+// topic 入参
+const contextData = {
+  type: 'topList',
+  commentId: 'commentId',
+};
+// response 出参
+{
+    comment: {},
+}
+
+<xs-vue-child-comment-video>
+// topic 入参
+const contextData = {
+  type: 'topList',
+  commentId: 'childReplyId', 
+  parentId: 'parentCommentId',
+};
+// response 出参
+{
+    comment: {}, // 可选
+    parentComment: {};
+}
+
