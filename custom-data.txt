@@ -1,0 +1,41 @@
+// topic 入参
+const contextData = {
+  type: 'topic',  // topic,comment,childComment
+  commentType: '', // topList, commentList, waterList
+  id: '',  // uuid , commentId, childReplyId
+  parentId: '', // 父id
+};
+// response 出参
+{
+    topic: {},
+    commeent: null,
+    parentComment: null,
+}
+---------------------------------------
+// comment 入参
+const contextData = {
+  type: 'comment',
+  commentType: 'topList', // topList, commentList, waterList
+  id: 'commentId',
+  parentId: '',
+};
+// response 出参
+{
+    topic: null,
+    commeent: {},
+    parentComment: null,
+}
+---------------------------------------
+// childComment
+const contextData = {
+  type: 'childComment',
+  commentType: 'topList',
+  id: 'commentId', 
+  parentId: 'childReplyId',
+};
+// response
+{
+    topic: null,
+    commeent: {},
+    parentComment: {},
+}
