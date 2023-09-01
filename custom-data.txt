@@ -113,7 +113,7 @@ function videoReg(content) {
   return videoId;
 }
 
-
+// modeType: user, admin;  forumType: topic, comment
 function videoTran({ content, modeType = 'user', forumType = 'topic', contextData }) {
   let replacedHtml = content;
   if(typeof content === 'string' && content !== 'null' && content) {
