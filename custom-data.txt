@@ -103,3 +103,22 @@ const contextData = {
     comment: {}, // 可选
     parentComment: {};
 }
+
+function videoReg(content) {
+  const regex = /\[::::video::(\d+)::::\]/g;
+  let videoId = '';
+  if (regex.exec(content)) {
+    videoId = match[1];
+  }
+  return videoId;
+}
+
+
+function videoTran({ content, modeType = 'user', forumType = 'topic', contextData }) {
+  let replacedHtml = content;
+  const videoId = videoReg(content);
+  if(videoId) {
+    replacedHtml = content.replace(regex, `<xs-vue-${modeType}-${fourmType}-video data='${JSON.stringify(contextData)}'></xs-vue-${modeType}-${fourmType}-video>`);
+  }
+  return  replacedHtml;
+}
