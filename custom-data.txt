@@ -43,12 +43,13 @@ const contextData = {
 ======================================
 
 方案二：
-<xs-vue-topic-video>
+用户模式：
+<xs-vue-user-topic-video>
 // response 出参
 {
     topic: {},
 }
-<xs-vue-comment-video>
+<xs-vue-user-comment-video>
 // comment 入参
 const contextData = {
   type: 'topList',
@@ -59,7 +60,7 @@ const contextData = {
     comment: {},
 }
 
-<xs-vue-child-comment-video>
+<xs-vue-user-child-comment-video>
 // child-comment 入参
 const contextData = {
   type: 'topList',
@@ -72,3 +73,33 @@ const contextData = {
     parentComment: {};
 }
 
+管理模式
+用户模式：
+<xs-vue-admin-topic-video>
+// response 出参
+{
+    topic: {},
+}
+<xs-vue-admin-comment-video>
+// comment 入参
+const contextData = {
+  type: 'topList',
+  commentId: 'commentId',
+};
+// response 出参
+{
+    comment: {},
+}
+
+<xs-vue-admin-child-comment-video>
+// child-comment 入参
+const contextData = {
+  type: 'topList',
+  commentId: 'childReplyId', 
+  parentId: 'parentCommentId',
+};
+// response 出参
+{
+    comment: {}, // 可选
+    parentComment: {};
+}
