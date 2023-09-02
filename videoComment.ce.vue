@@ -1,7 +1,7 @@
 <template>
-  <div class="video-view-container">
-    <video ref="videoPlayer" class="video-js"></video>
-    <div class="custom-play-button" @click="toggleVideoPlayback">
+  <div class="video-view-container" :class="{ 'default-view': !data.videoed}">
+    <video v-if="data.videoed" ref="videoPlayer" class="video-js"></video>
+    <div v-if="!isPlaying"  class="custom-play-button" @click="toggleVideoPlayback">
       <!-- 自定义播放按钮 -->
       <span :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'">
         {{ isPlaying ? 'stop' : 'play' }}
@@ -12,7 +12,7 @@
 
 <script setup>
 import {
-  reactive, ref, onMounted, toRefs,
+  reactive, ref, onMounted, toRefs, watch,
 } from 'vue';
 import '../assets/video.css';
 
@@ -27,6 +27,7 @@ const data = reactive({
   videoSrc:
     '//imss-video.huawei.com/video/play/8af40f498833d3cc018971162c5c430c/8af40f498833d3cc018971162c72430d/28.m3u8',
   isPlaying: false, // 标记视频是否正在播放
+  videoed: false,
 });
 
 const videoType = ref('');
@@ -43,15 +44,7 @@ const detectVideoType = (src) => {
   return 'video/mp4';
 };
 
-const toggleVideoPlayback = () => {
-  if (data.isPlaying) {
-    data.player.pause(); // 暂停视频播放
-  } else {
-    data.player.play(); // 重新播放视频
-  }
-};
-
-const loadVideoJS = async () => {
+const loadVideoJS = () => {
   if (!data.player) {
     data.player = data.videojsObject(videoPlayer.value, {
       autoplay: false, // 不自动播放
@@ -63,6 +56,9 @@ const loadVideoJS = async () => {
         },
       ],
     }, () => {
+      // 首次加载默认播放
+      data.player.play();
+
       data.player.on('play', () => {
         data.isPlaying = true;
       });
@@ -77,7 +73,28 @@ onMounted(async () => {
   videoType.value = detectVideoType(videoSrc.value);
   const { default: videojs } = await import('video.js');
   data.videojsObject = videojs;
-  loadVideoJS();
+});
+
+const toggleVideoPlayback = () => {
+  if (!data.player) {
+    if (data.videoed === false) {
+      data.videoed = true;
+    }
+    return;
+  }
+  if (data.isPlaying) {
+    data.player.pause(); // 暂停视频播放
+  } else {
+    data.player.play(); // 重新播放视频
+  }
+};
+
+watch(() => data.videoed, (newValue) => {
+  if (newValue) {
+    loadVideoJS();
+  }
+}, {
+  flush: 'post',
 });
 
 </script>
@@ -87,6 +104,12 @@ onMounted(async () => {
 .video-view-container {
   position: relative;
   margin-bottom: 10px;
+
+  &.default-view {
+    width: 100%;
+    padding-bottom: 56.25%;
+    background-color: #000;
+  }
 }
 /* 添加样式以定制自定义播放按钮 */
 .custom-play-button {
@@ -112,5 +135,9 @@ onMounted(async () => {
 .video-js {
   width: 100%;
   padding-bottom: 56.25%;
+}
+
+.video-js .vjs-big-play-button {
+  display: none;
 }
 </style>
