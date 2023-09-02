@@ -45,7 +45,7 @@ const detectVideoType = (src) => {
 };
 
 const loadVideoJS = () => {
-  if (!data.player) {
+  if (data.videojsObject && !data.player) {
     data.player = data.videojsObject(videoPlayer.value, {
       autoplay: false, // 不自动播放
       controls: true, // 禁用默认控件
