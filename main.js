@@ -17,3 +17,6 @@ const ExampleElement = defineCustomElement(videoComment);
 customElements.define('xs-vue-video', ExampleElement);
 
 app.mount('#app');
+
+
+// https://gitcode.gitcode.host/docs-cn/video.js-docs-cn/docs/guides/angular.html
