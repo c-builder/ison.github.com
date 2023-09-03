@@ -1,0 +1,31 @@
+<template lang="">
+  <div ref="customHTMLContainer" v-html="comment.content"></div>
+</template>
+<script setup>
+
+import {
+  defineProps,
+} from 'vue';
+
+// 1区：处理视频
+import useVideoCommponet from '../hooks/useVideoCommponet';
+
+// 2区：处理图片
+
+const props = defineProps({
+  comment: {
+    type: Object,
+    default() {
+      return null;
+    },
+  },
+});
+
+// 1区：处理视频
+const { customHTMLContainer } = useVideoCommponet(props.comment);
+
+// 2区：处理图片
+
+</script>
+<style lang="less">
+</style>
