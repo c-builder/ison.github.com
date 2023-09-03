@@ -1,0 +1,14 @@
+import { defineStore } from 'pinia';
+import {
+  reactive, toRefs,
+} from 'vue';
+
+const useVideoStore = defineStore('video', () => {
+  const state = reactive({
+    playerLists: [],
+  });
+
+  return { ...toRefs(state) };
+});
+
+export default useVideoStore;
