@@ -3,8 +3,10 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import MyCustomComponent from './components/MyCustomComponent.vue';
 import MessagePlugin from './messagePlugin';
-
+import globalMixin from './utils/globalMixin';
 const app = createApp(App);
+
+app.mixin(globalMixin);
 
 app.use(MessagePlugin);
 
