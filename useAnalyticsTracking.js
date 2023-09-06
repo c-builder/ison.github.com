@@ -7,7 +7,7 @@ export default function useAnalyticsTracking(from = '') {
     // 通过linkUrl来判断是否符合跳转条件
     // console.log(linkUrl); - console.log(document.referrer, '---');
     if (fromName) {
-      window.sessionStorage.setItem('previousTrackPage', fromName);
+      window.localStorage.setItem('previousTrackPage', fromName);
     }
   }
 
