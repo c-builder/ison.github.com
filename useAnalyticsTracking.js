@@ -5,7 +5,7 @@ export default function useAnalyticsTracking(from = '') {
   // linkUrl为将要重定向的地址
   function saveTrackPage(fromName, linkUrl) {
     // 通过linkUrl来判断是否符合跳转条件
-    // console.log(linkUrl);
+    // console.log(linkUrl); - console.log(document.referrer, '---');
     if (fromName) {
       window.sessionStorage.setItem('previousTrackPage', fromName);
     }
