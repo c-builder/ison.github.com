@@ -1,5 +1,4 @@
 // hooks/useAnalyticsTracking.js
-import { ref } from 'vue';
 
 // from 全局来源名
 export default function useAnalyticsTracking(from = '') {
