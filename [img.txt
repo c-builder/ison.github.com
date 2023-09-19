@@ -1,0 +1,15 @@
+const text = '[img::::861429927853854720:::| style="width:700.434px;height:1049.50634696756px"  ::]';
+const regex = /\[img::::(\d+):::\| style="width:(\d+\.\d+)px;height:(\d+\.\d+)px"\s*::\]/;
+const match = text.match(regex);
+
+if (match) {
+  const imageId = match[1];
+  const width = match[2];
+  const height = match[3];
+  
+  console.log(`图片ID: ${imageId}`);
+  console.log(`宽度: ${width}`);
+  console.log(`高度: ${height}`);
+} else {
+  console.log('未找到匹配的内容');
+}
