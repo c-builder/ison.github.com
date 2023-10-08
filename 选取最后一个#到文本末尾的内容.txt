@@ -1,0 +1,28 @@
+// 获取编辑器元素
+const editor = document.getElementById('editor');
+
+// 获取编辑器文本内容
+const text = editor.textContent;
+
+// 查找最后一个 "#" 符号的位置
+const lastIndex = text.lastIndexOf('#');
+
+if (lastIndex !== -1) {
+  // 创建一个范围（range）对象
+  const range = document.createRange();
+
+  // 将范围的起点设置为最后一个 "#" 符号之后的位置
+  range.setStart(editor.firstChild, lastIndex + 1);
+
+  // 将范围的终点设置为文本末尾
+  range.setEnd(editor, text.length);
+
+  // 获取当前选中的文本范围
+  const selection = window.getSelection();
+
+  // 移除任何之前存在的文本范围，以确保不会影响到新的范围
+  selection.removeAllRanges();
+
+  // 将新创建的范围添加到选中的文本范围中
+  selection.addRange(range);
+}
