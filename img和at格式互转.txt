@@ -1,0 +1,24 @@
+// 将<img src="xxx" />格式转换为[at:::xxx]格式
+function imgToNewFormat(inputText) {
+  var imgRegex = /<img src="([^"]+)" \/>/g;
+  return inputText.replace(imgRegex, function(match, srcValue) {
+    return '[at:::' + srcValue + ']';
+  });
+}
+
+// 将[at:::xxx]格式转换为<img src="xxx" />格式
+function newFormatToImg(inputText) {
+  var atRegex = /\[at:::(.*?)\]/g;
+  return inputText.replace(atRegex, function(match, srcValue) {
+    return '<img src="' + srcValue + '" />';
+  });
+}
+
+// 示例用法
+var inputText = '<img src="xxx1" /><img src="xxx2" />[at:::yyy1][at:::yyy2]';
+
+var outputText1 = imgToNewFormat(inputText);
+var outputText2 = newFormatToImg(inputText);
+
+console.log(outputText1); // 输出 [at:::xxx1][at:::xxx2][at:::yyy1][at:::yyy2]
+console.log(outputText2); // 输出 <img src="xxx1" /><img src="xxx2" /><img src="yyy1" /><img src="yyy2" />
