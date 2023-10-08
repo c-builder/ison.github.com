@@ -1,0 +1,19 @@
+// 获取编辑器元素
+const editor = document.getElementById('editor');
+
+// 在编辑器文本的末尾添加一个空格
+editor.textContent += ' ';
+
+// 创建一个范围（range）对象，将范围的起点和终点都设置为文本末尾
+const range = document.createRange();
+range.setStart(editor.firstChild, editor.textContent.length);
+range.setEnd(editor.firstChild, editor.textContent.length);
+
+// 获取当前选中的文本范围
+const selection = window.getSelection();
+
+// 移除任何之前存在的文本范围，以确保不会影响到新的范围
+selection.removeAllRanges();
+
+// 将新创建的范围对象添加到选中的文本范围中，以将光标定位到文本的最后
+selection.addRange(range);
