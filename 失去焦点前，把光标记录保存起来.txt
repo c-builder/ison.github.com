@@ -1,0 +1,55 @@
+// 获取编辑器元素
+const editor = document.getElementById('editor');
+
+// 初始化保存光标位置的变量
+let savedSelection = null;
+
+// 监听编辑器内容变化事件
+editor.addEventListener('input', () => {
+    // 保存当前的光标位置
+    savedSelection = saveSelection();
+});
+
+// 监听编辑器失去焦点事件
+editor.addEventListener('blur', () => {
+    // 恢复光标位置
+    if (savedSelection) {
+        restoreSelection(savedSelection);
+    }
+});
+
+// 在光标位置前插入一个空格
+function insertSpaceBeforeCursor() {
+    const textBeforeCursor = editor.textContent.substring(0, savedSelection.start);
+    const textAfterCursor = editor.textContent.substring(savedSelection.start);
+    editor.textContent = textBeforeCursor + ' ' + textAfterCursor;
+}
+
+// 保存当前的光标位置
+function saveSelection() {
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    return {
+        start: range.startOffset,
+        end: range.endOffset
+    };
+}
+
+// 恢复光标位置
+function restoreSelection(savedSelection) {
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.setStart(editor.firstChild, savedSelection.start);
+    range.setEnd(editor.firstChild, savedSelection.end);
+    selection.removeAllRanges();
+    selection.addRange(range);
+}
+
+// 在按钮点击时插入空格并保存光标位置
+document.getElementById('insertSpaceButton').addEventListener('click', () => {
+    if (savedSelection) {
+        insertSpaceBeforeCursor();
+        savedSelection.start++; // 更新保存的光标位置
+        savedSelection.end++; // 更新保存的光标位置
+    }
+});
