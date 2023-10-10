@@ -1,0 +1,36 @@
+// popupService.js
+
+export default {
+  showPopup(content, duration = 2000, type = "success") {
+    const popup = document.createElement("div");
+    popup.className = "popup";
+
+    // 创建图标元素
+    const icon = document.createElement("i");
+    if (type === "success") {
+      icon.className = "fas fa-check-circle"; // 成功图标
+    } else if (type === "error") {
+      icon.className = "fas fa-times-circle"; // 失败图标
+    }
+
+    // 创建文本内容
+    const textContent = document.createElement("div");
+    textContent.textContent = content;
+
+    // 将图标和文本内容添加到弹出框中
+    popup.appendChild(icon);
+    popup.appendChild(textContent);
+
+    // 设置弹出框样式以实现居中显示
+    popup.style.position = "fixed";
+    popup.style.top = "50%";
+    popup.style.left = "50%";
+    popup.style.transform = "translate(-50%, -50%)";
+
+    document.body.appendChild(popup);
+
+    setTimeout(() => {
+      document.body.removeChild(popup);
+    }, duration);
+  },
+};
