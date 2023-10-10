@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* CSS样式，用于居中显示弹出框 */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<button onclick="showPopup('这是一个通用的弹出框', 2000)">显示弹出框</button>
+
+<script>
+    function createAndShowPopup(content, duration) {
+        // 创建弹出框元素
+        var popup = document.createElement('div');
+        popup.className = 'popup';
+        popup.innerHTML = content;
+
+        // 将弹出框插入到<body>中
+        document.body.appendChild(popup);
+
+        // 显示弹出框
+        popup.style.display = 'block';
+
+        // 在指定的持续时间后自动关闭弹出框
+        setTimeout(function() {
+            popup.style.display = 'none';
+            // 移除弹出框元素
+            document.body.removeChild(popup);
+        }, duration);
+    }
+
+    function showPopup(content, duration) {
+        createAndShowPopup(content, duration);
+    }
+</script>
+
+</body>
+</html>
