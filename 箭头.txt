@@ -1,0 +1,69 @@
+<template>
+  <div id="content" style="height: 3000px; overflow: scroll;">
+    <div class="jiantou">{{ initData.isDown }}</div>
+    <!-- ... your paragraphs ... -->
+  </div>
+</template>
+
+<script setup>
+import { reactive, onMounted, onBeforeUnmount } from 'vue';
+
+const initData = reactive({
+  isDown: true,
+  lastScrollTop: 0,
+  lastScrollDirection: 'none',
+});
+
+const isScrollbarAtTop = () => window.scrollY === 0;
+
+const isScrollbarAtBottom = () => window.innerHeight + window.scrollY >= document.body.offsetHeight;
+
+const handleWindowScroll = () => {
+  let lastScrollTop = 0;
+  let scrollDirection = true;
+
+  const scrollHandler = () => {
+    const scrollTop = window.scrollY;
+
+    if (scrollTop > lastScrollTop) {
+      scrollDirection = true;
+    } else if (scrollTop < lastScrollTop) {
+      scrollDirection = false;
+    }
+
+    if (isScrollbarAtTop()) {
+      scrollDirection = true;
+    } else if (isScrollbarAtBottom()) {
+      scrollDirection = false;
+    }
+
+    initData.isDown = scrollDirection;
+    console.log(scrollDirection);
+
+    lastScrollTop = scrollTop;
+  };
+
+  window.addEventListener('scroll', scrollHandler);
+};
+
+onMounted(() => {
+  handleWindowScroll();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleWindowScroll);
+});
+</script>
+
+<style lang="less">
+body {
+  margin: 0;
+  padding: 0;
+}
+p {
+  height: 50px;
+}
+.jiantou {
+  position: fixed;
+}
+</style>
