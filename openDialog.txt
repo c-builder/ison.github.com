@@ -1,0 +1,104 @@
+<template>
+  <div>
+    <button @click="openDialog">显示全局弹框</button>
+  </div>
+</template>
+
+<script>
+import { ref } from "vue";
+
+export default {
+  setup() {
+    const showOverlay = ref(false);
+
+    const openDialog = () => {
+      showOverlay.value = true;
+
+      const content = '你确定要执行此操作吗？';
+      const title = '提示';
+      const customClass = 'custom-dialog'; // 添加自定义类名
+      const onConfirm = () => {
+        // 在这里执行确定按钮的操作
+        console.log('执行了确定操作！');
+        showOverlay.value = false; // 关闭弹框后隐藏遮罩
+      };
+      showCustomDialog({ content, title, customClass, onConfirm });
+    };
+
+    return {
+      openDialog,
+    };
+  },
+};
+
+function showCustomDialog(options) {
+  const overlay = document.createElement("div");
+  overlay.className = "overlay";
+  document.body.appendChild(overlay);
+
+  const dialog = document.createElement("div");
+  dialog.className = "modal";
+
+  // 添加自定义类名
+  if (options.customClass) {
+    dialog.classList.add(options.customClass);
+  }
+
+  dialog.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>${options.title || "标题"}</h2>
+      </div>
+      <p>${options.content}</p>
+      <button data-action="confirm">确定</button>
+      <button data-action="cancel">取消</button>
+    </div>
+  `;
+
+  document.body.appendChild(dialog);
+
+  const modalContent = dialog.querySelector(".modal-content");
+
+  modalContent.addEventListener("click", function (event) {
+    const target = event.target;
+    if (target.tagName === "BUTTON") {
+      if (target.getAttribute("data-action") === "confirm") {
+        if (options.onConfirm) {
+          options.onConfirm();
+        }
+      }
+      document.body.removeChild(overlay);
+      document.body.removeChild(dialog);
+    }
+  });
+}
+</script>
+
+<style>
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: #fff;
+  width: 300px;
+  border: 1px solid #000;
+  text-align: center;
+  position: relative;
+}
+
+.modal-header {
+  background-color: #ccc;
+  padding: 10px;
+}
+</style>
