@@ -1,0 +1,40 @@
+<div contenteditable="true" id="editableDiv" style="border: 1px solid #ccc; min-height: 100px;"></div>
+
+<script>
+  const editableDiv = document.getElementById('editableDiv');
+
+  // 添加粘贴事件监听器
+  editableDiv.addEventListener('paste', (e) => {
+    e.preventDefault(); // 阻止默认粘贴行为
+    const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+    document.execCommand('insertText', false, text);
+  });
+
+  // 用于跟踪文本历史的数组
+  const textHistory = [];
+  let currentHistoryIndex = -1;
+
+  // 添加Ctrl+Z（Undo）回退事件监听器
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'z') {
+      e.preventDefault();
+      if (currentHistoryIndex > 0) {
+        currentHistoryIndex--;
+        editableDiv.textContent = textHistory[currentHistoryIndex];
+      }
+    }
+  });
+
+  // 监听可编辑div内容的变化并将其添加到文本历史
+  editableDiv.addEventListener('input', () => {
+    if (currentHistoryIndex === -1) {
+      textHistory.unshift(editableDiv.textContent);
+    } else {
+      const currentText = editableDiv.textContent;
+      if (currentText !== textHistory[currentHistoryIndex]) {
+        textHistory.unshift(currentText);
+        currentHistoryIndex = 0;
+      }
+    }
+  });
+</script>
