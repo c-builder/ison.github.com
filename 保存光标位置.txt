@@ -1,0 +1,78 @@
+<div contenteditable="true" id="editableDiv" style="border: 1px solid #ccc; min-height: 100px;"></div>
+
+<button id="saveCursorBtn">保存光标位置</button>
+<button id="restoreCursorBtn">恢复光标位置</button>
+
+<script>
+  const editableDiv = document.getElementById('editableDiv');
+  const saveCursorBtn = document.getElementById('saveCursorBtn');
+  const restoreCursorBtn = document.getElementById('restoreCursorBtn');
+  let savedSelection;
+
+  // 添加粘贴事件监听器
+  editableDiv.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+    document.execCommand('insertText', false, text);
+  });
+
+  // 用于跟踪文本历史的数组
+  const textHistory = [];
+  let currentHistoryIndex = -1;
+
+  // 添加Ctrl+Z（Undo）回退事件监听器
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'z') {
+      e.preventDefault();
+      if (currentHistoryIndex > 0) {
+        currentHistoryIndex--;
+        editableDiv.textContent = textHistory[currentHistoryIndex];
+      }
+    }
+  });
+
+  // 监听可编辑div内容的变化并将其添加到文本历史
+  editableDiv.addEventListener('input', () => {
+    if (currentHistoryIndex === -1) {
+      textHistory.unshift(editableDiv.textContent);
+    } else {
+      const currentText = editableDiv.textContent;
+      if (currentText !== textHistory[currentHistoryIndex]) {
+        textHistory.unshift(currentText);
+        currentHistoryIndex = 0;
+      }
+    }
+  });
+
+  // 保存光标位置
+  saveCursorBtn.addEventListener('click', () => {
+    savedSelection = window.getSelection().getRangeAt(0).cloneRange();
+  });
+
+  // 恢复光标位置
+  restoreCursorBtn.addEventListener('click', () => {
+    if (savedSelection) {
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(savedSelection);
+    }
+  });
+</script>
+
+
+
+
+
+
+
+`window.getSelection()` 是一个 JavaScript API，用于获取当前页面上用户选择的文本范围（即选区范围）。它返回一个 `Selection` 对象，该对象代表当前文档中的选中文本部分。
+
+`Selection` 对象具有一些方法和属性，使您能够获取和操纵用户的文本选择，例如：
+
+- `getRangeAt(index)`: 获取选区范围中的一个文本范围，`index` 参数指定了所需文本范围的索引。
+- `removeAllRanges()`: 清除选区范围，取消用户的文本选择。
+- `addRange(range)`: 将一个文本范围添加到选区中，以改变或扩展用户的选择。
+
+这对于处理富文本编辑、文本高亮显示以及其他需要获取或操纵用户文本选择的情况非常有用。例如，您可以使用 `window.getSelection()` 来获取用户在可编辑的富文本区域中选择的文本范围，并对其进行操作，比如在选择文本上应用样式、获取选中文本的内容等。
+
+注意：`window.getSelection()` 通常在用户选择文本时才会返回有效的选区范围，因此在没有用户选择文本的情况下，它可能返回一个空的 `Selection` 对象。
