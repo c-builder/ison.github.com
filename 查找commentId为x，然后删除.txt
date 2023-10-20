@@ -1,0 +1,39 @@
+const commmentList = [{
+    content: 'aaa',
+    commentId: '1'
+},{
+    content: 'bbbb',
+    commentId: '2'
+},{
+    content: 'ccc',
+    commentId: '3'
+},{
+    content: 'ddd',
+    commentId: '4'
+}]
+
+const topList = [{
+    content: 'aaa',
+    commentId: '5'
+},{
+    content: 'bbbb',
+    commentId: '6'
+}]
+
+
+// 查找commentId为 '5' 的记录
+const commentIdToFind = '5';
+const foundCommentIndex = topList.findIndex(comment => comment.commentId === commentIdToFind);
+
+// 如果找到了记录
+if (foundCommentIndex !== -1) {
+    // 从topList中删除该记录
+    const foundComment = topList.splice(foundCommentIndex, 1)[0];
+    
+    // 将该记录添加到commentList中
+    commmentList.push(foundComment);
+}
+
+// 打印结果
+console.log(topList);
+console.log(commmentList);
