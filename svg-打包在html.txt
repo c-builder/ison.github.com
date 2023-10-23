@@ -1,0 +1,23 @@
+const { defineConfig } = require('@vue/cli-service');
+const path = require('path');
+const fs = require('fs');
+
+function getSvgSpriteContent() {
+  // 在这里加载并返回 detail.svg 的内容
+  // 你可以使用 fs 模块或者其他方式读取文件内容
+  const svgPath = path.resolve(__dirname, 'src/assets/commom.svg');
+  const svgContent = fs.readFileSync(svgPath, 'utf-8');
+  return svgContent;
+}
+
+module.exports = defineConfig({
+  publicPath: '',
+  transpileDependencies: true,
+  chainWebpack: (config) => {
+    config.plugin('html').tap((args) => {
+      const [x] = args;
+      x.iconSVG = getSvgSpriteContent();
+      return args;
+    });
+  },
+});
