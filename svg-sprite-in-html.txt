@@ -1,0 +1,39 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  // 其他配置...
+
+  chainWebpack: (config) => {
+    config.plugin('html').tap((args) => {
+      args[0].templateParameters = (compilation, assets, options) => {
+        return {
+          // 这里的 iconSVG 会被传递到 index.html 模板
+          iconSVG: getSvgSpriteContent(), // 替换为获取 SVG 内容的函数
+          ...args[0].templateParameters,
+        };
+      };
+      return args;
+    });
+  },
+};
+
+function getSvgSpriteContent() {
+  // 在这里加载并返回 detail.svg 的内容
+  // 你可以使用 fs 模块或者其他方式读取文件内容
+  const fs = require('fs');
+  const svgContent = fs.readFileSync('src/assets/detail.svg', 'utf-8');
+  return svgContent;
+}
+
+
+
+
+=================
+<div id="app">
+  <!-- Your Vue app content -->
+</div>
+<div id="svg-sprite" style="display: none;">
+  <%= htmlWebpackPlugin.options.iconSVG %>
+</div>
+
+
