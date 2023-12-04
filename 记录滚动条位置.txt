@@ -1,0 +1,65 @@
+<template>
+  <div>
+    <ul ref="commentList">
+      <li v-for="(comment, index) in visibleComments" :key="comment.id" :id="'comment-' + comment.id">
+        <!-- 评论内容 -->
+        {{ comment.text }}
+      </li>
+    </ul>
+    <button @click="scrollToComment(3)">定位到评论ID为3的评论</button>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      comments: [
+        { id: 1, text: "评论1" },
+        { id: 2, text: "评论2" },
+        { id: 3, text: "评论3" },
+        // ...
+      ],
+      visibleCommentIds: [],
+    };
+  },
+  computed: {
+    visibleComments() {
+      return this.comments.filter(comment => this.visibleCommentIds.includes(comment.id));
+    },
+  },
+  methods: {
+    scrollToComment(commentId) {
+      this.visibleCommentIds = [commentId];
+      this.$nextTick(() => {
+        const commentElement = document.getElementById('comment-' + commentId);
+        if (commentElement) {
+          commentElement.scrollIntoView({ behavior: "smooth" });
+        }
+      });
+    },
+    handleScroll() {
+      // 存储滚动位置
+      localStorage.setItem('scrollPosition', window.scrollY);
+    },
+    restoreScrollPosition() {
+      // 恢复滚动位置
+      const savedScrollPosition = localStorage.getItem('scrollPosition');
+      if (savedScrollPosition) {
+        window.scrollTo(0, savedScrollPosition);
+      }
+    },
+  },
+  mounted() {
+    // 页面加载完成后恢复滚动位置
+    this.$nextTick(this.restoreScrollPosition);
+
+    // 监听滚动事件
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  beforeDestroy() {
+    // 在组件销毁前移除滚动事件监听
+    window.removeEventListener('scroll', this.handleScroll);
+  },
+};
+</script>
