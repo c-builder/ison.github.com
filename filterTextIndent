@@ -1,0 +1,44 @@
+// 示例富文本内容字符串
+console.time("耗时");
+var htmlContent =
+  '<div><p style="text-indent: 20px; margin: 20px"></p><p style="text-indent: 20px; margin: 20px"><span style="text-indent: 10px;">222This is a paragraph with an image <img style="font-size: 39px;" src="image.jpg">.</span></p><p>This is another paragraph without an image.</p></div>';
+
+function filterTextIndent(htmlContent) {
+  // 正则表达式匹配包含 <img> 标签的 <p> 标签及其子元素的样式
+  var regex = /<p[^>]*>(?:(?!<\/p>).)*<img[^>]*>(?:(?!<\/p>).)*<\/p>/gi;
+
+  // 匹配结果数组
+  var matches = htmlContent.match(regex);
+
+  // 如果有匹配结果，则对每个结果进行处理
+  if (matches) {
+    for (var i = 0; i < matches.length; i++) {
+      var match = matches[i];
+
+      // 移除 text-indent
+      var updatedMatch = match.replace(/text-indent\s*:\s*[^;]+;/gi, "");
+
+      // 如果样式为空，则移除 style 属性
+      updatedMatch = updatedMatch.replace(
+        /style\s*=\s*"[^"]*"/gi,
+        function (match) {
+          if (match.match(/style\s*=\s*""/gi)) {
+            return "";
+          } else {
+            // 移除 style 属性中的空格
+            return match.replace(/\s/g, "");
+          }
+        }
+      );
+
+      // 将更新后的内容替换回原来的内容中
+      htmlContent = htmlContent.replace(match, updatedMatch);
+    }
+  }
+
+  return htmlContent;
+}
+
+// 输出更新后的富文本内容
+console.log(filterTextIndent(htmlContent));
+console.timeEnd("耗时");
