@@ -1,0 +1,24 @@
+function filterTextIndent(htmlContent) {
+    // 正则表达式匹配包含 <img> 标签的 <p> 标签及其子元素的样式
+    var regex = /<p[^>]*>(?:(?!<\/p>).)*<img[^>]*>(?:(?!<\/p>).)*<\/p>/gi;
+
+    // 替换匹配到的内容
+    var updatedHtmlContent = htmlContent.replace(regex, function(match) {
+        // 如果匹配到的内容中没有文本节点，则移除 text-indent 样式
+        if (!match.match(/<p[^>]*>(?:(?!<\/p>).)*\S+(?:(?!<\/p>).)*<\/p>/)) {
+            match = match.replace(/text-indent\s*:\s*[^;]+;/gi, '');
+        }
+        return match;
+    });
+
+    return updatedHtmlContent;
+}
+
+// 示例富文本内容字符串
+var htmlContent = '<div><p style="text-indent: 20px;">This is a paragraph with an image <img src="image.jpg"> and some text.</p><p>This is another paragraph without an image.</p></div>';
+
+// 调用函数进行过滤
+var filteredContent = filterTextIndent(htmlContent);
+
+// 输出更新后的富文本内容
+console.log(filteredContent);
