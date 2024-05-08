@@ -1,0 +1,57 @@
+function filterTextIndent(htmlContent) {
+    // 创建一个虚拟的父节点以便处理整个 HTML 内容
+    var parentElement = document.createElement('div');
+    parentElement.innerHTML = htmlContent;
+
+    // 查找所有 <p> 标签
+    var paragraphs = parentElement.getElementsByTagName('p');
+
+    // 遍历每个 <p> 标签
+    for (var i = 0; i < paragraphs.length; i++) {
+        var paragraph = paragraphs[i];
+
+        // 检查 <p> 标签下是否存在文本节点
+        var hasText = paragraph.childNodes.length > 0 && Array.from(paragraph.childNodes).some(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '');
+
+        // 如果存在文本节点，则不移除 text-indent 样式
+        if (!hasText) {
+            // 检查 <p> 标签下是否存在 <img> 标签
+            var hasImage = paragraph.querySelector('img');
+
+            // 如果存在 <img> 标签，则移除 text-indent 样式
+            if (hasImage) {
+                paragraph.style.removeProperty('text-indent');
+
+                // 移除子元素的 text-indent 样式
+                var childElements = paragraph.getElementsByTagName('*');
+                for (var j = 0; j < childElements.length; j++) {
+                    var childElement = childElements[j];
+                    childElement.style.removeProperty('text-indent');
+                }
+            }
+        }
+
+        // 移除 style 属性为空的情况
+        if (paragraph.getAttribute('style') === '') {
+            paragraph.removeAttribute('style');
+        }
+    }
+
+    // 获取更新后的富文本内容
+    var updatedHtmlContent = parentElement.innerHTML;
+
+    // 清空节点，释放内存
+    parentElement = null;
+
+    // 返回更新后的富文本内容
+    return updatedHtmlContent;
+}
+
+// 示例富文本内容字符串
+var htmlContent = '<div><p style="text-indent: 20px;">This is a paragraph with an image <img src="image.jpg"> and some text.</p><p>This is another paragraph without an image.</p></div>';
+
+// 调用函数进行过滤
+var filteredContent = filterTextIndent(htmlContent);
+
+// 输出更新后的富文本内容
+console.log(filteredContent);
