@@ -1,0 +1,33 @@
+function filterTextIndent(htmlContent) {
+  console.time("耗时");
+  var regex =
+    /<p(?:\s+[^>]*)?\s+style="[^"]*\btext-indent\s*:\s*[^;]+;[^"]*"\s*>(?:\s*<[^>]*>\s*)*<img[^>]*>(?:\s*<[^>]*>\s*)*<\/p>/g;
+
+  // 去除换行和空格
+  htmlContent = htmlContent.replace(/>\s+</g, "><");
+  htmlContent = htmlContent.replace(regex, function (match) {
+    return match.replace(/\btext-indent\s*:\s*[^;]+;/g, "");
+  });
+
+  htmlContent = htmlContent.replace(/style\s*=\s*"[^"]*"/gi, function (match) {
+    if (match.match(/style\s*=\s*""/gi)) {
+      return "";
+    } else {
+      return match;
+    }
+  });
+
+  console.timeEnd("耗时");
+  return htmlContent;
+}
+
+// 示例富文本内容字符串
+var htmlContent = `<div>        
+<p style="text-indent: 20px; margin:20px;">
+    <span style="text-indent: 20px;">This is a paragraph with an image <img src="image.jpg"> and some text.</span></p>   
+  <p style="text-indent: 20px; margin: 13px;">     This is another paragraph without an image.</p>
+      <p style="text-indent:20px;">    
+            <span style="text-indent:20px;">   <img src="image.jpg">   </span> 
+  </p>
+</div>`;
+console.log(filterTextIndent(htmlContent));
