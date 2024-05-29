@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const arr = [];
+
+      function buildTree(arr) {
+        const map = new Map();
+
+        // Build the map of all nodes
+        arr.flat().forEach((item) => {
+          if (!map.has(item.code)) {
+            map.set(item.code, {
+              code: item.code,
+              name: item.name,
+              children: [],
+            });
+          }
+        });
+
+        // Connect children to parents
+        arr.flat().forEach((item) => {
+          if (item.childCode) {
+            const parentNode = map.get(item.code);
+            const childNode = map.get(item.childCode);
+            if (
+              !parentNode.children.find(
+                (child) => child.code === childNode.code
+              )
+            ) {
+              parentNode.children.push(childNode);
+            }
+          }
+        });
+
+        // Merge children of nodes with the same code
+        map.forEach((node) => {
+          const uniqueChildren = [];
+          node.children.forEach((child) => {
+            if (!uniqueChildren.find((c) => c.code === child.code)) {
+              uniqueChildren.push(child);
+            }
+          });
+          node.children = uniqueChildren;
+        });
+
+        // Find the root nodes (the nodes that have no parent)
+        const rootNodes = [];
+        map.forEach((node) => {
+          if (!arr.flat().some((item) => item.childCode === node.code)) {
+            rootNodes.push(node);
+          }
+        });
+
+        return rootNodes;
+      }
+
+      const result = buildTree(arr);
+
+      console.log(JSON.stringify(result, null, 2));
+
+      console.log(result);
+    </script>
+  </body>
+</html>
