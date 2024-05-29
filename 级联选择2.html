@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const arr = [
+        [
+          { code: "022471", name: "华为技术", childCode: "049682" },
+          { code: "049682", name: "B类区域管理总总裁", childCode: "037924" },
+          { code: "037924", name: "新西兰办事处", childCode: "051260" },
+          { code: "051260", name: "新西兰销售部", childCode: "" },
+        ],
+        [
+          { code: "022471", name: "华为技术", childCode: "023338" },
+          { code: "023338", name: "2012实验室", childCode: "028383" },
+          { code: "028383", name: "北京研究所", childCode: "028384" },
+          { code: "028384", name: "北研人力资源", childCode: "" },
+        ],
+        [
+          { code: "022471", name: "华为技术", childCode: "047285" },
+          { code: "047285", name: "ICT产品与解决方案", childCode: "045969" },
+          { code: "045969", name: "计算产品线", childCode: "047435" },
+          { code: "047435", name: "计算战略与业务发展部", childCode: "068053" },
+          { code: "068053", name: "高校与科研人才", childCode: "" },
+        ],
+        [
+          { code: "022471", name: "华为技术", childCode: "023338" },
+          { code: "023338", name: "2012实验室", childCode: "028391" },
+          { code: "028391", name: "西安研究所", childCode: "028392" },
+          { code: "028392", name: "西研人力资源", childCode: "" },
+        ],
+      ];
+
+      function buildTree(arr) {
+        const map = new Map();
+
+        // Build the map of all nodes
+        arr.flat().forEach((item) => {
+          if (!map.has(item.code)) {
+            map.set(item.code, {
+              code: item.code,
+              name: item.name,
+              children: [],
+              isLeaf: true,
+            });
+          }
+        });
+
+        // Connect children to parents
+        arr.flat().forEach((item) => {
+          if (item.childCode) {
+            const parentNode = map.get(item.code);
+            const childNode = map.get(item.childCode);
+            parentNode.isLeaf = false;
+            if (
+              !parentNode.children.find(
+                (child) => child.code === childNode.code
+              )
+            ) {
+              parentNode.children.push(childNode);
+            }
+          }
+        });
+
+        // Merge children of nodes with the same code
+        map.forEach((node) => {
+          const uniqueChildren = [];
+          node.children.forEach((child) => {
+            if (!uniqueChildren.find((c) => c.code === child.code)) {
+              uniqueChildren.push(child);
+            }
+          });
+          node.children = uniqueChildren;
+        });
+
+        // Find the root nodes (the nodes that have no parent)
+        const rootNodes = [];
+        map.forEach((node) => {
+          if (!arr.flat().some((item) => item.childCode === node.code)) {
+            rootNodes.push(node);
+          }
+        });
+
+        return rootNodes;
+      }
+
+      function findNodeByCode(node, code) {
+        if (node.code === code) {
+          return node;
+        }
+        for (let child of node.children) {
+          const found = findNodeByCode(child, code);
+          if (found) {
+            return found;
+          }
+        }
+        return null;
+      }
+
+      function replaceChildren(tree, code, newItems) {
+        if (!code) {
+          // If code is empty, merge newItems as new root-level nodes
+          const existingCodes = new Set(tree.map((node) => node.code));
+          newItems.forEach((item) => {
+            if (!existingCodes.has(item.code)) {
+              tree.push({
+                ...item,
+                children: [],
+                isLeaf: item.isLeaf || false,
+              });
+              existingCodes.add(item.code);
+            }
+          });
+        } else {
+          const node = findNodeByCode({ children: tree }, code);
+          if (node) {
+            const existingChildren = node.children;
+            const newChildren = [];
+
+            // First, add or replace children according to newItems order
+            newItems.forEach((newItem) => {
+              const existingChild = existingChildren.find(
+                (child) => child.code === newItem.code
+              );
+              if (existingChild) {
+                newChildren.push({ ...existingChild, name: newItem.name });
+              } else {
+                newChildren.push({
+                  ...newItem,
+                  children: [],
+                  isLeaf: newItem.isLeaf || false,
+                });
+              }
+            });
+
+            // Then, add remaining existing children that were not in newItems
+            existingChildren.forEach((existingChild) => {
+              if (
+                !newChildren.find((child) => child.code === existingChild.code)
+              ) {
+                newChildren.push(existingChild);
+              }
+            });
+
+            node.children = newChildren;
+            node.isLeaf = newChildren.length === 0;
+          }
+        }
+      }
+
+      // Build the tree
+      const result = buildTree(arr);
+
+      // Example use: replace/add children of node with code "022471"
+      const newItems = [
+        { code: "027789", name: "科目1" },
+        { code: "027790", name: "科目2" },
+        { code: "049682", name: "B类区域管理总总裁" },
+        { code: "027791", name: "科目3" },
+        { code: "047285", name: "ICT产品与解决方案" },
+        { code: "027792", name: "科目4" },
+        { code: "023338", name: "2012实验室" },
+      ];
+      const newRootItems = [
+        {
+          name: "验证组织030736",
+          code: "0303736",
+          isLeaf: false,
+        },
+        {
+          name: "非部门",
+          code: "000000",
+          isLeaf: true,
+        },
+        {
+          name: "华为技术",
+          code: "022471",
+          isLeaf: false,
+        },
+      ];
+      replaceChildren(result, "", newRootItems);
+      replaceChildren(result, "022471", newItems);
+
+      console.log(JSON.stringify(result, null, 2));
+
+      console.log(result);
+    </script>
+  </body>
+</html>
