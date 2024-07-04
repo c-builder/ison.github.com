@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Segment.js Example</title>
+    <script src="./segmentit.js"></script>
+  </head>
+  <body>
+    <div id="output"></div>
+    <canvas id="myCanvas" width="400" height="200"></canvas>
+
+    <script>
+      // 创建一个分词器实例
+      const segmentit = Segmentit.useDefault(new Segmentit.Segment());
+
+      // 要分词的文本
+      var text = "习近平同上合组织成员国领导人合影878787qw。";
+
+      // 使用分词器进行分词
+      var result = segmentit.doSegment(text);
+
+      console.log(result, "---result");
+
+      // 将分词结果输出到页面上
+      var outputDiv = document.getElementById("output");
+      outputDiv.innerHTML = "<p>原文: " + text + "</p>";
+      outputDiv.innerHTML +=
+        "<p>分词结果: " + result.map((seg) => seg.w).join(" | ") + "</p>";
+
+      // 需要提取的关键词数量
+      var numKeywords = 5; // 可以根据需要调整提取的关键词数量
+
+      // 随机选择多个关键词
+      var selectedKeywords = [];
+      while (selectedKeywords.length < numKeywords) {
+        var randomIndex = Math.floor(Math.random() * result.length);
+        var keyword = result[randomIndex].w;
+        if (!selectedKeywords.includes(keyword)) {
+          selectedKeywords.push(keyword);
+        }
+      }
+
+      // 获取 canvas 元素
+      var canvas = document.getElementById("myCanvas");
+      var ctx = canvas.getContext("2d");
+
+      // 加载 Google Fonts 中的 Roboto 字体
+      var font = new FontFace(
+        "Roboto",
+        "url(https://fonts.gstatic.com/s/roboto/v27/KFOmCnqEu92Fr1Mu4mxP.ttf)"
+      );
+      font.load().then(function (loadedFont) {
+        document.fonts.add(loadedFont);
+
+        // 绘制文本和标记关键词
+        ctx.font = "20px Roboto";
+        ctx.fillText("分词结果：", 10, 30);
+        ctx.fillText(result.map((seg) => seg.w).join(" | "), 10, 60);
+        ctx.fillText("随机关键词：", 10, 100);
+        ctx.fillStyle = "red"; // 标记关键词为红色
+        for (var i = 0; i < selectedKeywords.length; i++) {
+          var yPosition = 130 + i * 30;
+          ctx.fillText(selectedKeywords[i], 10, yPosition);
+        }
+
+        // 导出为图片
+        var image = canvas.toDataURL("image/png");
+
+        // 创建一个下载链接
+        var downloadLink = document.createElement("a");
+        downloadLink.href = image;
+        downloadLink.download = "segmentation_result.png";
+        downloadLink.innerHTML = "下载图片";
+
+        // 将下载链接添加到页面上
+        document.body.appendChild(downloadLink);
+      });
+    </script>
+  </body>
+</html>
