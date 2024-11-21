@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>标准H5页面</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+
+      .content {
+        flex-grow: 1;
+        padding: 20px;
+      }
+
+      .textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
+
+      .submit-btn {
+        position: sticky;
+        bottom: 0;
+        width: 100%;
+        padding: 15px;
+        background-color: #007bff;
+        color: white;
+        font-size: 18px;
+        border: none;
+        border-radius: 0;
+        cursor: pointer;
+        text-align: center;
+        transition: bottom 0.3s;
+      }
+
+      .submit-btn:hover {
+        background-color: #0056b3;
+      }
+
+      /* 控制按钮隐藏 */
+      .hidden {
+        display: none;
+      }
+
+      /* 开关样式 */
+      .switch-container {
+        margin-top: 20px;
+        display: none;
+      }
+
+      .switch-label {
+        font-size: 16px;
+      }
+
+      .switch-input {
+        margin-left: 10px;
+      }
+      .content-block {
+        background: #c5f346;
+        height: 1200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+      .other {
+        display: flex;
+        height: 30px;
+        align-items: center;
+        background: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="container">
+      <div class="content">
+        <h1>标准H5页面</h1>
+        <div id="main" class="content-block">内容区</div>
+        <textarea
+          id="textarea"
+          class="textarea"
+          placeholder="请输入内容..."
+          rows="10"
+        ></textarea>
+        <div class="other">其他内容</div>
+      </div>
+
+      <button id="submitBtn" class="submit-btn" onclick="submit()">提交</button>
+    </div>
+
+    <script>
+      // 用来存储滚动位置
+      let savedScrollY = 0;
+      let lockSaveScrollY = false;
+
+      // 获取按钮和textarea元素
+      const submitBtn = document.getElementById("submitBtn");
+      const textarea = document.getElementById("textarea");
+      const main = document.getElementById("main");
+
+      textarea.addEventListener("touchend", () => {
+        textarea.focus();
+      });
+
+      // 监听textarea的focus事件，隐藏按钮
+      textarea.addEventListener("focus", function () {
+        lockSaveScrollY = true;
+        submitBtn.classList.add("hidden");
+      });
+
+      // 监听textarea的blur事件，恢复按钮
+      textarea.addEventListener("blur", function () {
+        lockSaveScrollY = false;
+        submitBtn.classList.remove("hidden");
+      });
+
+      // 提交方法
+      function submit() {
+        const text = textarea.value;
+        console.log("提交的内容:", text);
+      }
+
+      window.addEventListener("scroll", () => {
+        if (lockSaveScrollY) {
+          return;
+        }
+        // 获取垂直方向的滚动位置
+        savedScrollY =
+          document.documentElement.scrollTop || document.body.scrollTop;
+      });
+
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", () => {
+          if (window.visualViewport.height < window.innerHeight) {
+            // 处理键盘弹出
+            main.innerHTML = "键盘弹出";
+            submitBtn.classList.add("hidden");
+          } else {
+            // 处理键盘收起
+            main.innerHTML = "键盘收起";
+            lockSaveScrollY = false;
+            submitBtn.classList.remove("hidden");
+            setTimeout(function () {
+              window.scrollTo(0, savedScrollY);
+            }, 30);
+          }
+        });
+      } else {
+        main.innerHTML = "浏览器不支持 visualViewport API";
+      }
+    </script>
+  </body>
+</html>
