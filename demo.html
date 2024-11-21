@@ -106,6 +106,7 @@
       // 用来存储滚动位置
       let savedScrollY = 0;
       let lockSaveScrollY = false;
+      const windowHeight = window.innerHeight;
 
       // 获取按钮和textarea元素
       const submitBtn = document.getElementById("submitBtn");
@@ -145,7 +146,7 @@
 
       if (window.visualViewport) {
         window.visualViewport.addEventListener("resize", () => {
-          if (window.visualViewport.height < window.innerHeight) {
+          if (window.visualViewport.height < windowHeight) {
             // 处理键盘弹出
             main.innerHTML = "键盘弹出";
             submitBtn.classList.add("hidden");
