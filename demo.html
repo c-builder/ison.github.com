@@ -113,10 +113,6 @@
       const textarea = document.getElementById("textarea");
       const main = document.getElementById("main");
 
-      textarea.addEventListener("touchend", () => {
-        textarea.focus();
-      });
-
       // 监听textarea的focus事件，隐藏按钮
       textarea.addEventListener("focus", function () {
         lockSaveScrollY = true;
@@ -153,11 +149,13 @@
           } else {
             // 处理键盘收起
             main.innerHTML = "键盘收起";
-            lockSaveScrollY = false;
             submitBtn.classList.remove("hidden");
+
             setTimeout(function () {
+              lockSaveScrollY = false;
               window.scrollTo(0, savedScrollY);
-            }, 30);
+              textarea.blur();
+            }, 100);
           }
         });
       } else {
