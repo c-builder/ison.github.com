@@ -133,22 +133,41 @@
           document.documentElement.scrollTop || document.body.scrollTop;
       });
 
+      document.querySelectorAll("textarea").forEach(function (textarea) {
+        // 监听textarea的focus事件，隐藏按钮
+        textarea.addEventListener("focus", function () {
+          lockSaveScrollY = true;
+          savedScrollY =
+            document.documentElement.scrollTop || document.body.scrollTop;
+
+          submitBtn.classList.add("hidden");
+        });
+
+        // 监听textarea的blur事件，恢复按钮
+        textarea.addEventListener("blur", function () {
+          lockSaveScrollY = false;
+          submitBtn.classList.remove("hidden");
+          setTimeout(function () {
+            window.scrollTo(0, savedScrollY);
+          }, 100);
+        });
+      });
+
       if (window.visualViewport) {
         window.visualViewport.addEventListener("resize", () => {
           if (window.visualViewport.height < windowHeight) {
             // 处理键盘弹出
             main.innerHTML = "键盘弹出";
-            submitBtn.classList.add("hidden");
+            if (!submitBtn.classList.contains("hidden")) {
+              submitBtn.classList.add("hidden");
+            }
           } else {
             // 处理键盘收起
             main.innerHTML = "键盘收起";
-            submitBtn.classList.remove("hidden");
+            // submitBtn.classList.remove("hidden");
             allTextArea.forEach(function (textarea) {
               textarea.blur();
             });
-            setTimeout(function () {
-              window.scrollTo(0, savedScrollY);
-            }, 50);
           }
         });
       } else {
