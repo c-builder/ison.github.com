@@ -113,26 +113,14 @@
       // 用来存储滚动位置
       let savedScrollY = 0;
       let lockSaveScrollY = false;
+
       const windowHeight = window.innerHeight;
 
       // 获取按钮和textarea元素
       const submitBtn = document.getElementById("submitBtn");
       const textarea = document.getElementById("textarea");
       const main = document.getElementById("main");
-
-      document.querySelectorAll("textarea").forEach(function (textarea) {
-        // 监听textarea的focus事件，隐藏按钮
-        textarea.addEventListener("focus", function () {
-          lockSaveScrollY = true;
-          // submitBtn.classList.add("hidden");
-        });
-
-        // 监听textarea的blur事件，恢复按钮
-        textarea.addEventListener("blur", function () {
-          lockSaveScrollY = false;
-          // submitBtn.classList.remove("hidden");
-        });
-      });
+      const allTextArea = document.querySelectorAll("textarea");
 
       // 提交方法
       function submit() {
@@ -140,6 +128,20 @@
         console.log("提交的内容:", text);
       }
 
+      document.querySelectorAll("textarea").forEach(function (textarea) {
+        // 监听textarea的focus事件，隐藏按钮
+        textarea.addEventListener("focus", function () {
+          lockSaveScrollY = true;
+        });
+
+        // 监听textarea的blur事件，恢复按钮
+        textarea.addEventListener("blur", function () {
+          lockSaveScrollY = false;
+          setTimeout(function () {
+            window.scrollTo(0, savedScrollY);
+          }, 50);
+        });
+      });
       window.addEventListener("scroll", () => {
         if (lockSaveScrollY) {
           return;
@@ -159,12 +161,9 @@
             // 处理键盘收起
             main.innerHTML = "键盘收起";
             submitBtn.classList.remove("hidden");
-
-            setTimeout(function () {
-              lockSaveScrollY = false;
-              window.scrollTo(0, savedScrollY);
+            allTextArea.forEach(function (textarea) {
               textarea.blur();
-            }, 50);
+            });
           }
         });
       } else {
