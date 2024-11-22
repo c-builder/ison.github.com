@@ -128,15 +128,6 @@
         console.log("提交的内容:", text);
       }
 
-      document.querySelectorAll("textarea").forEach(function (textarea) {
-        // 监听textarea的blur事件，恢复按钮
-        textarea.addEventListener("blur", function () {
-          lockSaveScrollY = false;
-          setTimeout(function () {
-            window.scrollTo(0, savedScrollY);
-          }, 20);
-        });
-      });
       window.addEventListener("scroll", () => {
         if (lockSaveScrollY) {
           return;
@@ -160,6 +151,10 @@
             allTextArea.forEach(function (textarea) {
               textarea.blur();
             });
+            setTimeout(function () {
+              lockSaveScrollY = false;
+              window.scrollTo(0, savedScrollY);
+            }, 50);
           }
         });
       } else {
