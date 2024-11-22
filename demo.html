@@ -89,6 +89,12 @@
     <div id="app" class="container">
       <div class="content">
         <h1>标准H5页面</h1>
+        <textarea
+          id="textarea2"
+          class="textarea"
+          placeholder="请输入内容..."
+          rows="10"
+        ></textarea>
         <div id="main" class="content-block">内容区</div>
         <textarea
           id="textarea"
@@ -113,16 +119,18 @@
       const textarea = document.getElementById("textarea");
       const main = document.getElementById("main");
 
-      // 监听textarea的focus事件，隐藏按钮
-      textarea.addEventListener("focus", function () {
-        lockSaveScrollY = true;
-        submitBtn.classList.add("hidden");
-      });
+      document.querySelectorAll("textarea").forEach(function (textarea) {
+        // 监听textarea的focus事件，隐藏按钮
+        textarea.addEventListener("focus", function () {
+          lockSaveScrollY = true;
+          // submitBtn.classList.add("hidden");
+        });
 
-      // 监听textarea的blur事件，恢复按钮
-      textarea.addEventListener("blur", function () {
-        lockSaveScrollY = false;
-        submitBtn.classList.remove("hidden");
+        // 监听textarea的blur事件，恢复按钮
+        textarea.addEventListener("blur", function () {
+          lockSaveScrollY = false;
+          // submitBtn.classList.remove("hidden");
+        });
       });
 
       // 提交方法
