@@ -146,10 +146,10 @@
         // 监听textarea的blur事件，恢复按钮
         textarea.addEventListener("blur", function () {
           lockSaveScrollY = false;
+          submitBtn.classList.remove("hidden");
           setTimeout(function () {
-            submitBtn.classList.remove("hidden");
             window.scrollTo(0, savedScrollY);
-          }, 50);
+          }, 70);
         });
       });
 
@@ -158,13 +158,11 @@
           if (window.visualViewport.height < windowHeight) {
             // 处理键盘弹出
             main.innerHTML = "键盘弹出";
-            if (!submitBtn.classList.contains("hidden")) {
-              submitBtn.classList.add("hidden");
-            }
+            submitBtn.classList.add("hidden");
           } else {
             // 处理键盘收起
             main.innerHTML = "键盘收起";
-            // submitBtn.classList.remove("hidden");
+            submitBtn.classList.remove("hidden");
             allTextArea.forEach(function (textarea) {
               textarea.blur();
             });
