@@ -146,10 +146,10 @@
         // 监听textarea的blur事件，恢复按钮
         textarea.addEventListener("blur", function () {
           lockSaveScrollY = false;
-          submitBtn.classList.remove("hidden");
           setTimeout(function () {
+            submitBtn.classList.remove("hidden");
             window.scrollTo(0, savedScrollY);
-          }, 100);
+          }, 50);
         });
       });
 
