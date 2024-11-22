@@ -129,17 +129,12 @@
       }
 
       document.querySelectorAll("textarea").forEach(function (textarea) {
-        // 监听textarea的focus事件，隐藏按钮
-        textarea.addEventListener("focus", function () {
-          lockSaveScrollY = true;
-        });
-
         // 监听textarea的blur事件，恢复按钮
         textarea.addEventListener("blur", function () {
           lockSaveScrollY = false;
           setTimeout(function () {
             window.scrollTo(0, savedScrollY);
-          }, 50);
+          }, 20);
         });
       });
       window.addEventListener("scroll", () => {
@@ -156,6 +151,7 @@
           if (window.visualViewport.height < windowHeight) {
             // 处理键盘弹出
             main.innerHTML = "键盘弹出";
+            lockSaveScrollY = true;
             submitBtn.classList.add("hidden");
           } else {
             // 处理键盘收起
