@@ -112,7 +112,6 @@
     <script>
       // 用来存储滚动位置
       let savedScrollY = 0;
-      let lockSaveScrollY = false;
 
       const windowHeight = window.innerHeight;
 
@@ -129,9 +128,6 @@
       }
 
       window.addEventListener("scroll", () => {
-        if (lockSaveScrollY) {
-          return;
-        }
         // 获取垂直方向的滚动位置
         savedScrollY =
           document.documentElement.scrollTop || document.body.scrollTop;
@@ -142,7 +138,6 @@
           if (window.visualViewport.height < windowHeight) {
             // 处理键盘弹出
             main.innerHTML = "键盘弹出";
-            lockSaveScrollY = true;
             submitBtn.classList.add("hidden");
           } else {
             // 处理键盘收起
@@ -152,7 +147,6 @@
               textarea.blur();
             });
             setTimeout(function () {
-              lockSaveScrollY = false;
               window.scrollTo(0, savedScrollY);
             }, 50);
           }
