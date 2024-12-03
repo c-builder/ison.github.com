@@ -1,19 +1,23 @@
 function debounce(func, wait = 300, immediate = false) {
   let timeout;
-  
+  let calledImmediately = false;
+
   return function(...args) {
     const context = this;
+    let result;
 
-    if (immediate && !timeout) {
-      func.apply(context, args);  // 立即执行一次
+    // 首次调用时立即执行
+    if (immediate && !calledImmediately) {
+      result = func.apply(context, args);  // 执行函数并保存结果
+      calledImmediately = true;
     }
 
     clearTimeout(timeout);
     timeout = setTimeout(() => {
-      if (!immediate) {
-        func.apply(context, args);  // 等待时间后执行
-      }
+      result = func.apply(context, args);  // 等待时间后执行并保存结果
     }, wait);
+
+    return result;  // 返回函数的执行结果
   };
 }
 
