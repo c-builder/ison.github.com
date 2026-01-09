@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>时间轴-demo</title>
+    <style>
+      :root {
+        --timeline-container-width: 450px;
+        --timeline-item-width: 100px;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+
+      .box {
+        width: 80%;
+        height: 120px;
+        margin: 20px auto;
+        background-color: #727171;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        opacity: 1;
+        transform: none;
+        transition: opacity 800ms ease, transform 800ms ease;
+      }
+      .box.animate {
+        opacity: 0;
+        background-color: #588bac;
+        transform: translateY(20px);
+      }
+      .box.animate.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .timeline-header {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 100;
+        padding: 10px 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .timeline-container {
+        width: var(--timeline-container-width);
+        margin: 0 auto;
+        overflow: hidden;
+        position: relative;
+				display: flex;
+				align-items: center;
+				height: 38px;
+      }
+
+      .timeline {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .timeline-item {
+        width: var(--timeline-item-width);
+        text-align: center;
+        padding: 10px 0;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: color 0.3s ease, transform 0.3s ease, font-weight 0.3s ease;
+        color: #333;
+        font-weight: normal;
+      }
+
+      .timeline-item.active {
+        color: #0066cc;
+        font-weight: bold;
+      }
+
+      .content-container {
+        margin-top: 20px;
+        padding: 0 20px;
+      }
+
+      .content-section {
+        margin-bottom: 30px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        overflow: hidden;
+        text-align: center;
+      }
+
+      .year-title {
+        background-color: #2792fd;
+        color: white;
+        padding: 12px 20px;
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0;
+      }
+
+      .content-body {
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .content-column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .content-text {
+        padding: 15px;
+        background: white;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        flex-grow: 1;
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+      }
+
+      .content-image {
+        width: 100%;
+        min-height: 300px;
+        object-fit: cover;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        background-color: #bebebe;
+      }
+
+      .content-image.animate-on-scroll {
+        transform: translateY(20px);
+        opacity: 0;
+        transition: transform 800ms ease-out, opacity 800ms ease-out;
+      }
+
+      .content-image.animate-on-scroll.animated {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .content-section:nth-child(odd) {
+        background-color: #f0f0f0;
+      }
+
+      .content-section:first-child {
+        margin-top: 60px;
+      }
+
+      .box-header {
+        width: 100%;
+        height: 480px;
+        background: #dcdcdc;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box-header">
+    </div>
+    <div class="timeline-header">
+      <div class="timeline-container" id="timelineContainer">
+        <ul class="timeline" id="timeline">
+          <li class="timeline-item active" data-year="2025">2025</li>
+          <li class="timeline-item" data-year="2024">2024</li>
+          <li class="timeline-item" data-year="2023">2023</li>
+          <li class="timeline-item" data-year="2022">2022</li>
+          <li class="timeline-item" data-year="2021">2021</li>
+          <li class="timeline-item" data-year="2020">2020</li>
+          <li class="timeline-item" data-year="2019">2019</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-container" id="contentContainer">
+      <div class="content-section" data-year="2025">
+        <h2 class="year-title">2025年</h2>
+        <div class="content-body">
+          <div class="content-column">
+            <div class="content-text">
+              <h3>科技创新</h3>
+              <p>
+                2025年，人工智能技术已广泛应用于各个领域，量子计算取得突破性进展，全球科技创新指数达到历史新高。
+              </p>
+            </div>
+            <div class="content-image"></div>
+          </div>
+          <div class="content-column">
+            <div class="content-text">
+              <h3>可持续发展</h3>
+              <p>
+                全球碳中和目标取得显著进展，可再生能源占比超过50%，绿色科技产业成为经济增长新引擎。
+              </p>
+            </div>
+            <div class="content-image"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section" data-year="2024">
+        <h2 class="year-title">2024年</h2>
+        <div class="content-body">
+          <div class="content-column">
+            <div class="content-text">
+              <h3>经济复苏</h3>
+              <p>
+                全球经济在经历调整后呈现稳定复苏态势，新兴市场表现尤为突出，数字经济占比持续扩大。
+              </p>
+            </div>
+            <div class="content-image"></div>
+          </div>
+          <div class="content-column">
+            <div class="content-text">
+              <h3>文化交流</h3>
+              <p>
+                全球文化交流活动频繁，数字博物馆和虚拟现实技术让文化遗产保护与传播进入新阶段。
+              </p>
+            </div>
+            <div class="content-image"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section" data-year="2023">
+        <h2 class="year-title">2023年</h2>
+        <div class="content-body">
+          <div class="content-column">
+            <div class="content-text">
+              <h3>AI突破</h3>
+              <p>
+                生成式AI技术趋于成熟，在创意产业、医疗诊断等领域广泛应用，引发新一轮产业变革。
+              </p>
+            </div>
+            <div class="content-image"></div>
+          </div>
+          <div class="content-column">
+            <div class="content-text">
+              <h3>气候行动</h3>
+              <p>
+                全球气候协议执行力度加大，碳捕捉技术取得突破，极端天气事件应对体系逐步完善。
+              </p>
+            </div>
+            <div class="content-image"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section" data-year="2022">
+        <h2 class="year-title">2022年</h2>
+        <div class="content-body">
+          <div class="content-column">
+            <div class="content-text">
+              <h3>数字经济</h3>
+              <p>
+                元宇宙概念落地应用，Web3.0技术推动数字经济发展，区块链应用场景持续扩展。
+              </p>
+            </div>
+            <div class="content-image"></div>
+          </div>
+          <div class="content-column">
+            <div class="content-text">
+              <h3>医疗创新</h3>
+              <p>
+                mRNA技术应用范围扩大，个性化医疗方案普及，全球公共卫生体系韧性增强。
+              </p>
+            </div>
+            <div class="content-image"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section" data-year="2021">
+        <h2 class="year-title">2021年</h2>
+        <div class="content-body">
+          <div class="content-column">
+            <div class="content-text">
+              <h3>经济恢复</h3>
+              <p>
+                全球经济在后疫情时代逐步复苏，供应链重构加速，新兴产业发展势头强劲。
+              </p>
+            </div>
+            <div class="content-image"></div>
+          </div>
+          <div class="content-column">
+            <div class="content-text">
+              <h3>工作模式</h3>
+              <p>
+                混合办公模式成为主流，数字化协作工具快速发展，工作与生活平衡理念深入人心。
+              </p>
+            </div>
+            <img src="https://picsum.photos/id/108/800/400" alt="2021经济图片" class="content-image">
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section" data-year="2020">  
+        <h2 class="year-title">2020年</h2>
+        <div class="content-body">
+          <div class="content-column">
+            <div class="content-text">
+              <h3>全球抗疫</h3>
+              <p>
+                新冠疫情全球大流行，各国采取不同防控措施，疫苗研发创下历史最快纪录。
+              </p>
+            </div>
+            <div class="content-image"></div>
+          </div>
+          <div class="content-column">
+            <div class="content-text">
+              <h3>数字化转型</h3>
+              <p>
+                疫情加速企业数字化转型，远程教育、在线医疗等服务快速发展，数字经济占比显著提升。
+              </p>
+            </div>
+            <div class="content-image"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section" data-year="2019">
+        <h2 class="year-title">2019年</h2>
+        <div class="content-body">
+          <div class="content-column">
+            <div class="content-text">
+              <h3>5G商用</h3>
+              <p>
+                全球多国启动5G商用，物联网、自动驾驶等技术迎来新发展机遇，通信产业格局重塑。
+              </p>
+            </div>
+            <div class="content-image"></div>
+          </div>
+          <div class="content-column">
+            <div class="content-text">
+              <h3>贸易格局</h3>
+              <p>
+                全球贸易摩擦加剧，区域经济一体化进程加速，供应链多元化趋势明显。
+              </p>
+            </div>
+            <div class="content-image"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const rootStyles = getComputedStyle(document.documentElement);
+        const containerWidth = parseFloat(
+          rootStyles.getPropertyValue("--timeline-container-width")
+        );
+        const itemWidth = parseFloat(
+          rootStyles.getPropertyValue("--timeline-item-width")
+        );
+
+        const timeline = document.getElementById("timeline");
+        const timelineItems = document.querySelectorAll(".timeline-item");
+        const contentSections = document.querySelectorAll(".content-section");
+
+        const allImages = document.querySelectorAll(".content-image");
+
+        function isInFirstScreen(element) {
+          const rect = element.getBoundingClientRect();
+          return rect.top < window.innerHeight && rect.bottom > 0;
+        }
+
+        function initImageAnimations() {
+          allImages.forEach((img) => {
+            if (isInFirstScreen(img)) {
+              img.classList.remove("animate-on-scroll");
+            } else {
+              img.classList.add("animate-on-scroll");
+            }
+          });
+        }
+
+        const imageObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                setTimeout(() => {
+                  entry.target.classList.add("animated");
+                  imageObserver.unobserve(entry.target);
+                }, 200);
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+
+        initImageAnimations();
+
+        allImages.forEach((img) => {
+          if (img.classList.contains("animate-on-scroll")) {
+            imageObserver.observe(img);
+          }
+        });
+
+        centerYear("2025");
+
+        timelineItems.forEach((item) => {
+          item.addEventListener("click", function () {
+            const year = this.getAttribute("data-year");
+            selectYear(year, true);
+            centerYear(year);
+            scrollToContentImmediate(year);
+          });
+        });
+
+        window.addEventListener("scroll", function () {
+          updateSelectedYearOnScroll();
+        });
+
+        function selectYear(year, fromClick = false) {
+          timelineItems.forEach((item) => {
+            item.classList.remove("active");
+            if (item.getAttribute("data-year") === year) {
+              item.classList.add("active");
+            }
+          });
+        }
+
+        function centerYear(year) {
+          const yearIndex = Array.from(timelineItems).findIndex(
+            (item) => item.getAttribute("data-year") === year
+          );
+
+          if (yearIndex !== -1) {
+            const centerPosition = containerWidth / 2 - itemWidth / 2;
+            const targetPosition = centerPosition - yearIndex * itemWidth;
+            timeline.style.transform = `translateX(${targetPosition}px)`;
+          }
+        }
+
+        function scrollToContentImmediate(year) {
+          const targetSection = document.querySelector(
+            `.content-section[data-year="${year}"]`
+          );
+          if (targetSection) {
+            window.scrollTo({
+              top: targetSection.offsetTop - 60,
+              behavior: "smooth",
+            });
+          }
+        }
+
+        function updateSelectedYearOnScroll() {
+          const scrollPosition = window.scrollY + window.innerHeight / 2;
+          let closestSection = null;
+          let smallestDistance = Infinity;
+
+          contentSections.forEach((section) => {
+            const sectionTop = section.offsetTop;
+            const sectionCenter = sectionTop + section.offsetHeight / 2;
+            const distance = Math.abs(scrollPosition - sectionCenter);
+
+            if (distance < smallestDistance) {
+              smallestDistance = distance;
+              closestSection = section;
+            }
+          });
+
+          if (closestSection) {
+            const year = closestSection.getAttribute("data-year");
+            selectYear(year);
+            centerYear(year);
+          }
+        }
+      });
+
+      
+    </script>
+  </body>
+</html>
